@@ -40,7 +40,7 @@ class Perceptron(object):
                 # self.errors_.append(errors)
 
                 # de/douth1
-                d1 = - outo1 * (target - outo1) * self.rsigmoid(neto1) * self.wo
+                d1 = - (target - outo1) * self.rsigmoid(neto1) * self.wo
                 
                 # douth1/dx
                 d2 = xi * self.rsigmoid(neth1)
@@ -81,7 +81,7 @@ plt.show()
 
 # 超参数设置
 EPOCHES = 1000
-LR = 2
+LR = 0.3
 # 搭网络并训练
 ppn = Perceptron(epochs = EPOCHES, lr = LR)
 ppn.train(x,y)
