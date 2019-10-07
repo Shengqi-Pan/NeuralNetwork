@@ -22,7 +22,6 @@ class Perceptron(object):
         for i in range (self.epochs):
             # 初始化误差
             errors = 0
-            errorsum = 0
             # 训练
             for xi, target in zip(x, y):
                 # 隐藏层输入
@@ -36,7 +35,6 @@ class Perceptron(object):
                 
                 # 计算误差
                 errors = 0.5 * (target - self.predict(xi)) ** 2
-                errorsum += errors
                 # self.errors_.append(errors)
 
                 # de/douth1
@@ -52,17 +50,20 @@ class Perceptron(object):
                 # 更新隐藏层权值
                 self.wi = self.wi - self.lr * np.multiply(d2, d1)
                 self.bi = self.bi - self.lr * np.multiply(self.rsigmoid(neth1), d1)
-            self.errors_.append(errorsum / 5)
-            print(errorsum / 5)
+            self.errors_.append(errors)
+            print(errors)
         return self
 
     # 激活函数
     def sigmoid(self, x):
+        return 2 / (1 + np.exp(-x))
+
+    def newsigmoid(self, x):
         return 1 / (1 + np.exp(-x))
 
     # 激活函数求导
     def rsigmoid(self, x):
-        return 1 * np.multiply(self.sigmoid(x), (1 - self.sigmoid(x)))
+        return 2 * np.multiply(self.newsigmoid(x), (1 - self.newsigmoid(x)))
 
     # 第一层的输出
     def layer1out(self, x):
@@ -72,18 +73,15 @@ class Perceptron(object):
     def predict(self, x):
         return self.sigmoid(np.inner(self.layer1out(x), self.wo) + self.bo)
 
-# 准备训练数据
+# 准备数据
 # x = np.pi * np.random.rand(10)
-x = np.arange(0, 1 * np.pi + np.pi/4, np.pi/4)
+x = np.arange(0, np.pi + np.pi/10, np.pi/10)
 y = np.sin(x)
 plt.plot(x, y)
 plt.show()
 
-# 超参数设置
-EPOCHES = 1000
-LR = 2
-# 搭网络并训练
-ppn = Perceptron(epochs = EPOCHES, lr = LR)
+ppn = Perceptron(epochs = 10000, lr = 0.3)
+
 ppn.train(x,y)
 
 # 作图
@@ -97,7 +95,7 @@ plt.plot(x, target)
 plt.show()
 
 
-x = np.arange(0, EPOCHES, 1)
+x = np.arange(0, 10000, 1)
 plt.plot(x, ppn.errors_)
 plt.show()
 
