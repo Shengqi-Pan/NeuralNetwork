@@ -11,7 +11,6 @@ class Perceptron(object):
         self.epochs = epochs
         # 权重初始化
         self.wi = np.random.rand(10)  # 隐藏层的权值矩阵
-        self.wi = np.array([-0.1, 0.13,-0.23, 0.18, -0.26, -0.13, 0.031, 0.02, 0.011, 0.021])
         self.bi = np.random.rand(10)      # 隐藏层阈值
         self.wo = np.random.rand(10)  # 输出层的权值矩阵
         self.bo = 0.3                       # 输出层阈值
@@ -32,7 +31,7 @@ class Perceptron(object):
                 # 输出层输入
                 neto1 = np.inner(outh1, self.wo) + self.bo
                 # 模型输出
-                outo1 = self.sigmoid(neto1)
+                # outo1 = self.sigmoid(neto1)
                 
                 # 计算误差
                 errors = 0.5 * (target - self.predict(xi)) ** 2
