@@ -40,20 +40,20 @@ class Perceptron(object):
                 # self.errors_.append(errors)
 
                 # de/douth1
-                d1 = - (target - outo1) * self.rsigmoid(neto1) * self.wo
+                d1 = - (target - neto1) * self.wo
                 
                 # douth1/dx
                 d2 = xi * self.rsigmoid(neth1)
 
                 # 反向传播
                 # 更新输出层权值
-                self.wo = self.wo - self.lr * (-(target - outo1) * self.rsigmoid(neto1)) * outh1               
-                self.bo = self.bo - self.lr * (-(target - outo1) * self.rsigmoid(neto1))
+                self.wo = self.wo - self.lr * (-(target - neto1)) * outh1               
+                self.bo = self.bo - self.lr * (-(target - neto1))
                 # 更新隐藏层权值
                 self.wi = self.wi - self.lr * np.multiply(d2, d1)
                 self.bi = self.bi - self.lr * np.multiply(self.rsigmoid(neth1), d1)
-            self.errors_.append(errorsum / 5)
-            print(errorsum / 5)
+            self.errors_.append(errorsum / 9)
+            print(errorsum / 9)
         return self
 
     # 激活函数
@@ -70,35 +70,59 @@ class Perceptron(object):
 
     # 预测
     def predict(self, x):
-        return self.sigmoid(np.inner(self.layer1out(x), self.wo) + self.bo)
+        return np.inner(self.layer1out(x), self.wo) + self.bo
 
 # 准备训练数据
 # x = np.pi * np.random.rand(10)
-x = np.arange(0, 1 * np.pi + np.pi/4, np.pi/4)
+x = np.arange(0, 2 * np.pi + np.pi/4, np.pi/4)
 y = np.sin(x)
 plt.plot(x, y)
 plt.show()
 
 # 超参数设置
-EPOCHES = 1000
+EPOCHES = 5000
 LR = 0.3
 # 搭网络并训练
 ppn = Perceptron(epochs = EPOCHES, lr = LR)
 ppn.train(x,y)
 
 # 作图
-x = np.arange(0, np.pi + np.pi/100, np.pi/100)
+testerror = 0
+testerror_ = []
+x = np.arange(0, 2 * np.pi + np.pi/180, np.pi/180)
 target = np.sin(x)
-y = np.zeros(101)
-for i in range (1, 101):
+y = np.zeros(361)
+for i in range (0, 361):
     y[i] = ppn.predict(x[i])
-plt.plot(x, y)
-plt.plot(x, target)
+    testerror += 0.5 * (y[i] - target[i]) ** 2
+    testerror_.append(0.5 * (y[i] - target[i]) ** 2)
+
+plt.plot(x, y, label = 'fit curve')
+plt.plot(x, target, label = 'target curve')
+plt.xlabel('input')
+plt.ylabel('output')
+plt.title('target curve and fit curve')
+plt.legend() # 显示图例
 plt.show()
 
+# 画测试数据的误差
+x = np.arange(1, 362, 1)
+plt.scatter(x, testerror_, label = 'test error')
+plt.xlabel('input')
+plt.ylabel('test error')
+plt.title('test error')
+plt.legend()
+plt.show()
 
+print(testerror/361)
+
+# 画训练中的误差变化 
 x = np.arange(0, EPOCHES, 1)
-plt.plot(x, ppn.errors_)
+plt.plot(x, ppn.errors_, label = 'training error')
+plt.xlabel('index')
+plt.ylabel('training error')
+plt.title('training error')
+plt.legend()
 plt.show()
 
 #%%
