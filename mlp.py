@@ -6,9 +6,10 @@ import matplotlib.pyplot as plt
 
 class Perceptron(object):
 
-    def __init__(self, lr = 0.01, epochs = 50):
+    def __init__(self, lr = 0.01, epochs = 50, decay = 0.0005):
         self.lr = lr
         self.epochs = epochs
+        self.decay = decay
         # 权重初始化
         self.wi = np.random.rand(10)  # 隐藏层的权值矩阵
         self.bi = np.random.rand(10)      # 隐藏层阈值
@@ -46,11 +47,11 @@ class Perceptron(object):
 
                 # 反向传播
                 # 更新输出层权值
-                self.wo = self.wo - self.lr * (-(target - neto1)) * outh1               
-                self.bo = self.bo - self.lr * (-(target - neto1))
+                self.wo = self.wo - self.lr / (1 + self.decay * self.epochs) * (-(target - neto1)) * outh1               
+                self.bo = self.bo - self.lr / (1 + self.decay * self.epochs) * (-(target - neto1))
                 # 更新隐藏层权值
-                self.wi = self.wi - self.lr * np.multiply(d2, d1)
-                self.bi = self.bi - self.lr * np.multiply(self.rsigmoid(neth1), d1)
+                self.wi = self.wi - self.lr / (1 + self.decay * self.epochs) * np.multiply(d2, d1)
+                self.bi = self.bi - self.lr / (1 + self.decay * self.epochs) * np.multiply(self.rsigmoid(neth1), d1)
             self.errors_.append(errorsum / 9)
             print(errorsum / 9)
         return self
@@ -81,8 +82,9 @@ plt.show()
 # 超参数设置
 EPOCHES = 5000
 LR = 0.3
+DECAY = 0
 # 搭网络并训练
-ppn = Perceptron(epochs = EPOCHES, lr = LR)
+ppn = Perceptron(epochs = EPOCHES, lr = LR, decay = DECAY)
 ppn.train(x,y)
 
 # 作图
