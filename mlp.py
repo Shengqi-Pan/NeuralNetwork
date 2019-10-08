@@ -42,7 +42,7 @@ class Perceptron(object):
                 # de/douth1
                 d1 = - (target - neto1) * self.wo
                 
-                # douth1/dx
+                # douth1/dwi
                 d2 = xi * self.rsigmoid(neth1)
 
                 # 反向传播
