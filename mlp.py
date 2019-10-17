@@ -10,10 +10,11 @@ class Perceptron(object):
         self.lr = lr
         self.epochs = epochs
         self.decay = decay
+        self.neurons = 100 # 神经元个数
         # 权重初始化
-        self.wi = np.random.rand(10)  # 隐藏层的权值矩阵
-        self.bi = np.random.rand(10)      # 隐藏层阈值
-        self.wo = np.random.rand(10)  # 输出层的权值矩阵
+        self.wi = np.random.rand(self.neurons)  # 隐藏层的权值矩阵
+        self.bi = np.random.rand(self.neurons)      # 隐藏层阈值
+        self.wo = np.random.rand(self.neurons)  # 输出层的权值矩阵
         self.bo = 0.3                       # 输出层阈值
 
     def train(self, x, y):
@@ -35,7 +36,7 @@ class Perceptron(object):
                 # outo1 = self.sigmoid(neto1)
                 
                 # 计算误差
-                errors = 0.5 * (target - self.predict(xi)) ** 2
+                errors = 0.5 * (target - neto1) ** 2
                 errorsum += errors
                 # self.errors_.append(errors)
 
@@ -76,11 +77,15 @@ class Perceptron(object):
 # x = np.pi * np.random.rand(10)
 x = np.arange(0, 2 * np.pi + np.pi/4, np.pi/4)
 y = np.sin(x)
+plt.subplot(221)
 plt.plot(x, y)
-plt.show()
+plt.title('input data')
+plt.xlabel('input')
+plt.ylabel('output')
+# plt.show()
 
 # 超参数设置
-EPOCHES = 5000
+EPOCHES = 10000
 LR = 0.3
 DECAY = 0
 # 搭网络并训练
@@ -98,32 +103,42 @@ for i in range (0, 361):
     testerror += 0.5 * (y[i] - target[i]) ** 2
     testerror_.append(0.5 * (y[i] - target[i]) ** 2)
 
+plt.subplot(222)
 plt.plot(x, y, label = 'fit curve')
 plt.plot(x, target, label = 'target curve')
 plt.xlabel('input')
 plt.ylabel('output')
 plt.title('target curve and fit curve')
 plt.legend() # 显示图例
-plt.show()
+# plt.show()
 
 # 画测试数据的误差
 x = np.arange(1, 362, 1)
+plt.subplot(223)
+# testerror_ = np.log10(testerror_)
 plt.scatter(x, testerror_, label = 'test error')
 plt.xlabel('input')
 plt.ylabel('test error')
 plt.title('test error')
 plt.legend()
-plt.show()
+# plt.show()
 
 print(testerror/361)
 
 # 画训练中的误差变化 
 x = np.arange(0, EPOCHES, 1)
+plt.subplot(224)
 plt.plot(x, ppn.errors_, label = 'training error')
 plt.xlabel('index')
 plt.ylabel('training error')
 plt.title('training error')
 plt.legend()
+plt.subplots_adjust(wspace =0.3, hspace =0.3)#调整子图间距
+fig = plt.gcf()
+fig.suptitle('lr=%.2f, neurons=%d, epoches=%d\ntest error=%e, training error=%e'%(ppn.lr, ppn.neurons, ppn.epochs, testerror/361, ppn.errors_[-1]),fontsize=16,fontweight=600,x=0.5,y=0.99,linespacing=1.8)
+# plt.show()
+fig.set_size_inches(12, 8)
+fig.savefig('task1result//lr=%.2fneurons=%depochs=%dtesterror=%etrainingerror=%e.png'%(ppn.lr, ppn.neurons, ppn.epochs, testerror/361, ppn.errors_[-1]), dpi=500)
 plt.show()
 
 #%%
